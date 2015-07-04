@@ -1,13 +1,10 @@
 CREATE TABLE [dbo].[Command] (
     [Sequence]                BIGINT IDENTITY (1, 1) NOT NULL,
     [CommandId]               NVARCHAR (36)          NOT NULL,
-    [CommandTypeCode]         INT                    NOT NULL,
-    [Timestamp]               DATETIME               NOT NULL,
-    [Payload]                 NVARCHAR (MAX)         NOT NULL,
-    [AggregateRootTypeCode]   INT                    NOT NULL,
     [AggregateRootId]         NVARCHAR (36)          NULL,
     [Message]                 NVARCHAR (MAX)         NULL,
     [MessageTypeCode]         INT                    NOT NULL,
+    [Timestamp]               DATETIME               NOT NULL,
     CONSTRAINT [PK_Command] PRIMARY KEY CLUSTERED ([CommandId] ASC)
 )
 GO
@@ -21,6 +18,8 @@ CREATE TABLE [dbo].[EventStream] (
     [Events]                  NVARCHAR (MAX)         NOT NULL,
     CONSTRAINT [PK_EventStream] PRIMARY KEY CLUSTERED ([AggregateRootId] ASC, [Version] ASC)
 )
+GO
+CREATE UNIQUE INDEX [IX_EventStream_AggId_CommandId] ON [dbo].[EventStream] ([AggregateRootId], [CommandId])
 GO
 CREATE TABLE [dbo].[SequenceMessagePublishedVersion] (
     [Sequence]                BIGINT IDENTITY (1, 1) NOT NULL,
